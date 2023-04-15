@@ -1,19 +1,8 @@
-const { MongoClient } = require("mongodb");
+import express, { json } from "express";
 
-const url = "";
+const { PORT = 3000, MONGO_URL = "mongodb://localhost:27017/mestodb" } =
+  process.env;
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+const app = express();
 
-const client = new MongoClient(url, options);
-
-client.connect(function (err: any) {
-  if (err) {
-    console.log("Ошибка подключения к базе данных:", err);
-    return;
-  }
-  console.log("Успешное подключение к базе данных");
-
-});
+app.use(json());
