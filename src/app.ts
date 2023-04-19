@@ -1,6 +1,8 @@
-import express, { json, Request, Response } from "express";
+import express, { json, NextFunction, Request, Response } from "express";
 import path from 'path';
 import mongoose from 'mongoose';
+import routes from "./routes/index";
+import { IRequestCustom } from "utils/types";
 
 
 const { PORT = 4444, MONGODB_URL = "mongodb://localhost:27017/mestodb" } =
@@ -10,11 +12,14 @@ const app = express();
 
 app.use(json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(routes);
 
-app.get("/", (req: Request, res: Response) => {
-  res.status(201).send("test");
+app.use((req: Request, res: Response, next: NextFunction) => {
+  (req as IRequestCustom).user = {
+    _id: '5d8b8592978f8bd833ca8133',
+  };
+  next();
 });
-
 
 
 async function start() {
@@ -28,4 +33,5 @@ async function start() {
     console.log('Ошибка сервера', error);
   }
 }
+
 start()
