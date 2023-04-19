@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema<TUser>({
     maxlength: 200,
     required: true,
     validate: {
-      validator: (v: string) => v.length > 2 && v.length < 200,
+      validator: (valid: string) => valid.length > 2 && valid.length < 200,
       message: "Текст короче 2 символов или длиннее 200",
     },
   },
@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema<TUser>({
     type: String,
     required: true,
     validate: {
-      validator: (v: string) => regExp.test(v),
+      validator: (valid: string) => regExp.test(valid),
       message: "Некорректная ссылка",
     },
   },
