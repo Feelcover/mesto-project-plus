@@ -1,4 +1,6 @@
 import { Request } from 'express';
+import { Types } from 'mongoose';
+
 
 export interface IRequestCustom extends Request {
   user?: {
@@ -10,4 +12,12 @@ export type TUser = {
   name: string;
   about: string;
   avatar: string;
+}
+
+export type TCard = {
+  name: string;
+  link: string;
+  owner: Types.ObjectId;
+  likes: Types.ObjectId[];
+  createdAt: Date;
 }
