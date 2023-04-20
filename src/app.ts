@@ -1,13 +1,11 @@
 import express, { json, NextFunction, Request, Response } from "express";
 import path from 'path';
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
 // import routes from "./routes/index";
 import { IRequestCustom } from "utils/types";
 
-dotenv.config();
 
-const { PORT = 4444, MONGODB_URL = "mongodb://localhost:27017/mestodb" } =
+const { PORT = 4444, DB_URL = "mongodb://127.0.0.1:27017/mestodb" } =
   process.env;
 
 const app = express();
@@ -27,12 +25,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 async function start() {
   try {
     mongoose.set('strictQuery', false); //для теста
-    await mongoose.connect(MONGODB_URL);
+    await mongoose.connect(DB_URL);
     console.log('База данных подключена');
     await app.listen(PORT);
     console.log('Сервер запущен', PORT);
-  } catch (error) {
-    console.log('Ошибка сервера', error);
+  } catch (err) {
+    console.log('Ошибка сервера', err);
   }
 }
 
