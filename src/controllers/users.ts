@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { IRequest } from "utils/types";
 import User from "../models/user";
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find().exec();
     if (users) {
@@ -22,7 +22,7 @@ export const getUserById = async (req: Request, res: Response) => {
     if (!users) {
       return res.status(404).send("Пользователь не найден");
     }
-    return res.json({ data: users });
+    return res.status(200).json({ data: users });
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -61,7 +61,7 @@ export const updateUser = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).send("Пользователь не найден");
     }
-    return res.json({ data: user });
+    return res.status(200).json({ data: user });
   } catch (err) {
     console.log(err);
     return res.status(500).send("Не удалось обновить данные пользователя");
@@ -84,7 +84,7 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).send("Пользователь не найден");
     }
-    return res.json({ data: user });
+    return res.status(200).json({ data: user });
   } catch (err) {
     console.log(err);
     return res.status(500).send("Не удалось обновить аватар");
