@@ -11,7 +11,7 @@ const { PORT = 3000, DB_URL = "mongodb://127.0.0.1:27017/mestodb" } =
 const app = express();
 
 app.use(express.json());
-// app.use(testUserId); // для теста
+app.use(testUserId); // для теста
 app.use(express.static(path.join(__dirname, "public")));
 app.use(routes);
 
