@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { regExp } from "utils/constants";
-import { TUser } from "utils/types";
+import { regExp } from "../utils/constants";
+import { TUser } from "../utils/types";
 
 const UserSchema = new mongoose.Schema<TUser>({
   name: {
