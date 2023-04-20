@@ -1,9 +1,11 @@
 import express, { json, NextFunction, Request, Response } from "express";
 import path from 'path';
 import mongoose from 'mongoose';
-import routes from "./routes/index";
+import * as dotenv from 'dotenv';
+// import routes from "./routes/index";
 import { IRequestCustom } from "utils/types";
 
+dotenv.config();
 
 const { PORT = 4444, MONGODB_URL = "mongodb://localhost:27017/mestodb" } =
   process.env;
@@ -11,15 +13,15 @@ const { PORT = 4444, MONGODB_URL = "mongodb://localhost:27017/mestodb" } =
 const app = express();
 
 app.use(json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(routes);
+// app.use(routes);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  (req as IRequestCustom).user = {
-    _id: '5d8b8592978f8bd833ca8133',
-  };
-  next();
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   (req as IRequestCustom).user = {
+//     _id: '5d8b8592978f8bd833ca8133',
+//   };
+//   next();
+// });
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 async function start() {
@@ -34,4 +36,4 @@ async function start() {
   }
 }
 
-start()
+start();
