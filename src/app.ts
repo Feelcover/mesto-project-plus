@@ -18,7 +18,6 @@ app.use(routes);
 
 const start = async () => {
   try {
-    mongoose.set("strictQuery", false); //для теста
     await mongoose.connect(DB_URL);
     console.log("База данных подключена", DB_URL);
     await app.listen(PORT);

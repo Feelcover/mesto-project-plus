@@ -69,3 +69,26 @@ export const likeCard = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteLikeCard = async (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  const me = (req as IRequest).user?._id;
+
+  try {
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      {
+        $pull: {
+          likes: me,
+        },
+      },
+      { new: true }
+    );
+    if (!card) {
+      return res.status(400).send("Не удалось найти карточку");
+    }
+    return res.status(200).json({ data: card });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось убрать лайк");
+  }
+};
