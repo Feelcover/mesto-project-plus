@@ -3,7 +3,7 @@ import { regExp } from "../utils/constants";
 import { TCard } from "../utils/types";
 
 const cardSchema = new mongoose.Schema<TCard>({
-  name:{
+  name: {
     type: String,
     required: true,
     minlength: 2,
@@ -12,19 +12,18 @@ const cardSchema = new mongoose.Schema<TCard>({
   link: {
     type: String,
     required: true,
-    validate:{
-      validator:(valid:string) => regExp.test(valid),
-      message:"Некорректная ссылка"
+    validate: {
+      validator: (valid: string) => regExp.test(valid),
+      message: "Некорректная ссылка",
     },
-
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'user',
+    ref: "user",
   },
   likes: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     default: [],
   },
   createdAt: {
