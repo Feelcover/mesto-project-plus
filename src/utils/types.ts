@@ -21,3 +21,9 @@ export type TCard = {
   likes: Types.ObjectId[];
   createdAt: Date;
 }
+
+export interface IRequest extends Request {
+  user?: {
+    _id: string
+  };
+}

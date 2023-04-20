@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { IRequest } from "utils/types";
 import User from "../models/user";
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -44,9 +45,9 @@ export const createUser = async (req: Request, res: Response) => {
   };
   }
 
-  export const updateUser = async (req: any, res: Response) => {
+  export const updateUser = async (req: Request, res: Response) => {
     const { name, about } = req.body;
-    const me = req.user?._id;
+    const me = (req as IRequest).user?._id;
     try {
       if (!name || !about) {
         return res.status(400).send("Проверьте данные пользователя");
@@ -63,9 +64,9 @@ export const createUser = async (req: Request, res: Response) => {
     };
   };
 
-  export const updateUserAvatar = async (req: any, res: Response) => {
+  export const updateUserAvatar = async (req: Request, res: Response) => {
     const { avatar } = req.body;
-    const me = req.user?._id;
+    const me = (req as IRequest).user?._id;
     try {
       if (!avatar) {
         return res.status(400).send("Проверьте ссылку на аватар");
