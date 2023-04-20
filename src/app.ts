@@ -1,37 +1,29 @@
-import express, { json, NextFunction, Request, Response } from "express";
-import path from 'path';
-import mongoose from 'mongoose';
-// import routes from "./routes/index";
-import { IRequestCustom } from "utils/types";
-
+import express from "express";
+import path from "path";
+import mongoose from "mongoose";
+import routes from "./routes/index";
+import { testUserId } from "utils/constants";
 
 const { PORT = 4444, DB_URL = "mongodb://127.0.0.1:27017/mestodb" } =
   process.env;
 
 const app = express();
 
-app.use(json());
-// app.use(routes);
+app.use(express.json());
+app.use(routes);
+// app.use(testUserId); // для теста
+app.use(express.static(path.join(__dirname, "public")));
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   (req as IRequestCustom).user = {
-//     _id: '5d8b8592978f8bd833ca8133',
-//   };
-//   next();
-// });
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-async function start() {
+const start = async () => {
   try {
-    mongoose.set('strictQuery', false); //для теста
+    mongoose.set("strictQuery", false); //для теста
     await mongoose.connect(DB_URL);
-    console.log('База данных подключена');
+    console.log("База данных подключена", DB_URL);
     await app.listen(PORT);
-    console.log('Сервер запущен', PORT);
+    console.log("Сервер запущен", PORT);
   } catch (err) {
-    console.log('Ошибка сервера', err);
+    console.log("Ошибка подключения", err);
   }
-}
+};
 
 start();
