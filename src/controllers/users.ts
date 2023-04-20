@@ -62,3 +62,22 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(500).send("Не удалось обновить данные пользователя");
     };
   };
+
+  export const updateUserAvatar = async (req: any, res: Response) => {
+    const { avatar } = req.body;
+    const me = req.user?._id;
+    try {
+      if (!avatar) {
+        return res.status(400).send("Проверьте ссылку на аватар");
+      }
+
+      const user = await User.findByIdAndUpdate(me, { avatar },{new:true, runValidators:true});
+      if (!user) {
+        return res.status(404).send("Пользователь не найден");
+      }
+      return res.json({ data: user });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Не удалось обновить аватар");
+    };
+  };
