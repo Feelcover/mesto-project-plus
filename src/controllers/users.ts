@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import user from "../models/user";
+import User from "../models/user";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await user.find().populate("_id").exec();
-    res.json(users);
+    const users = await User.find().exec();
+    if (users) {
+      res.status(200).send({ data: users });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -12,3 +14,32 @@ export const getAllUsers = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const users = await User.findById(req.params.userId);
+    if (!users) {
+      return res.status(404).send("Пользователь не найден");
+    }
+    return res.json({ data: users });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось найти пользователя",
+    });
+  }
+};
+
+export const createUser = async (req: Request, res: Response) => {
+  const { name, about, avatar } = req.body;
+  try {
+    if (!name || !about || !avatar) {
+      return res.status(400).send("Проверьте данные пользователя");
+    }
+    const user = await User.create({ name, about, avatar });
+    return res.status(201).json({ data: user });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось зарегестрироваться");
+  };
+  }
