@@ -28,19 +28,44 @@ export const createCard = async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     return res.status(500).send("Не удалось создать карточку");
-  };
-  };
+  }
+};
 
-  export const deleteCard = async (req: Request, res: Response) => {
-    const { cardId }= req.params;
-    try {
-      const card = await Card.findByIdAndRemove(cardId);
-      if (!card) {
-        return res.status(400).send("Не удалось найти карточку");
-      }
-      return res.status(200).json({ data: card });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Не удалось удалить карточку");
-    };
-    };
+export const deleteCard = async (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  try {
+    const card = await Card.findByIdAndRemove(cardId);
+    if (!card) {
+      return res.status(400).send("Не удалось найти карточку");
+    }
+    return res.status(200).json({ data: card });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось удалить карточку");
+  }
+};
+
+export const likeCard = async (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  const me = (req as IRequest).user?._id;
+
+  try {
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      {
+        $addToSet: {
+          likes: me,
+        },
+      },
+      { new: true }
+    );
+    if (!card) {
+      return res.status(400).send("Не удалось найти карточку");
+    }
+    return res.status(200).json({ data: card });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось поставить лайк");
+  }
+};
+

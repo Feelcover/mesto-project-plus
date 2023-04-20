@@ -42,43 +42,51 @@ export const createUser = async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     return res.status(500).send("Не удалось зарегестрироваться");
-  };
   }
+};
 
-  export const updateUser = async (req: Request, res: Response) => {
-    const { name, about } = req.body;
-    const me = (req as IRequest).user?._id;
-    try {
-      if (!name || !about) {
-        return res.status(400).send("Проверьте данные пользователя");
-      }
+export const updateUser = async (req: Request, res: Response) => {
+  const { name, about } = req.body;
+  const me = (req as IRequest).user?._id;
+  try {
+    if (!name || !about) {
+      return res.status(400).send("Проверьте данные пользователя");
+    }
 
-      const user = await User.findByIdAndUpdate(me, { name, about },{new:true, runValidators:true});
-      if (!user) {
-        return res.status(404).send("Пользователь не найден");
-      }
-      return res.json({ data: user });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Не удалось обновить данные пользователя");
-    };
-  };
+    const user = await User.findByIdAndUpdate(
+      me,
+      { name, about },
+      { new: true, runValidators: true }
+    );
+    if (!user) {
+      return res.status(404).send("Пользователь не найден");
+    }
+    return res.json({ data: user });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось обновить данные пользователя");
+  }
+};
 
-  export const updateUserAvatar = async (req: Request, res: Response) => {
-    const { avatar } = req.body;
-    const me = (req as IRequest).user?._id;
-    try {
-      if (!avatar) {
-        return res.status(400).send("Проверьте ссылку на аватар");
-      }
+export const updateUserAvatar = async (req: Request, res: Response) => {
+  const { avatar } = req.body;
+  const me = (req as IRequest).user?._id;
+  try {
+    if (!avatar) {
+      return res.status(400).send("Проверьте ссылку на аватар");
+    }
 
-      const user = await User.findByIdAndUpdate(me, { avatar },{new:true, runValidators:true});
-      if (!user) {
-        return res.status(404).send("Пользователь не найден");
-      }
-      return res.json({ data: user });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).send("Не удалось обновить аватар");
-    };
-  };
+    const user = await User.findByIdAndUpdate(
+      me,
+      { avatar },
+      { new: true, runValidators: true }
+    );
+    if (!user) {
+      return res.status(404).send("Пользователь не найден");
+    }
+    return res.json({ data: user });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Не удалось обновить аватар");
+  }
+};
