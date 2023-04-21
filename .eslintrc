@@ -21,7 +21,8 @@
             ".ts",
             ".js",
             ".json"
-        ]
+        ],
+        "moduleDirectory": ["node_modules", "src"]
       }
     },
     "import/extensions": [
