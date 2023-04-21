@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { regExp } from "../utils/constants";
-import { TCard } from "../utils/types";
+import mongoose from 'mongoose';
+import { regExp } from '../utils/constants';
+import { TCard } from '../utils/types';
 
 const cardSchema = new mongoose.Schema<TCard>({
   name: {
@@ -14,16 +14,16 @@ const cardSchema = new mongoose.Schema<TCard>({
     required: true,
     validate: {
       validator: (valid: string) => regExp.test(valid),
-      message: "Некорректная ссылка",
+      message: 'Некорректная ссылка',
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "user",
+    ref: 'user',
   },
   likes: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     default: [],
   },
   createdAt: {
@@ -32,4 +32,4 @@ const cardSchema = new mongoose.Schema<TCard>({
   },
 });
 
-export default mongoose.model<TCard>("Card", cardSchema);
+export default mongoose.model<TCard>('Card', cardSchema);

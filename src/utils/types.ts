@@ -1,5 +1,5 @@
-import { Request } from "express";
-import { Types } from "mongoose";
+import { Request } from 'express';
+import { Types } from 'mongoose';
 
 export interface IRequestCustom extends Request {
   user?: {

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { regExp } from "../utils/constants";
-import { TUser } from "../utils/types";
+import mongoose from 'mongoose';
+import { regExp } from '../utils/constants';
+import { TUser } from '../utils/types';
 
 const UserSchema = new mongoose.Schema<TUser>({
   name: {
@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema<TUser>({
     required: true,
     validate: {
       validator: (valid: string) => valid.length > 2 && valid.length < 30,
-      message: "Текст короче 2 символов или длиннее 30",
+      message: 'Текст короче 2 символов или длиннее 30',
     },
   },
   about: {
@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema<TUser>({
     required: true,
     validate: {
       validator: (valid: string) => valid.length > 2 && valid.length < 200,
-      message: "Текст короче 2 символов или длиннее 200",
+      message: 'Текст короче 2 символов или длиннее 200',
     },
   },
   avatar: {
@@ -28,9 +28,9 @@ const UserSchema = new mongoose.Schema<TUser>({
     required: true,
     validate: {
       validator: (valid: string) => regExp.test(valid),
-      message: "Некорректная ссылка",
+      message: 'Некорректная ссылка',
     },
   },
 });
 
-export default mongoose.model<TUser>("User", UserSchema);
+export default mongoose.model<TUser>('User', UserSchema);
