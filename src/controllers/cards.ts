@@ -1,4 +1,4 @@
-import { InternalServerErr } from "../errors/errors";
+import { BadRequestErr, InternalServerErr, NotFoundErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "utils/types";
 import Card from "../models/card";
@@ -27,7 +27,7 @@ export const createCard = async (
   const owner = (req as IRequest).user?._id;
   try {
     if (!name || !link) {
-      next(res.status(400).send("Проверьте данные для создания карточки"));
+      next(new BadRequestErr("Проверьте данные для создания карточки"));
     }
     const card = await Card.create({ name, link, owner });
     return res.status(201).json({ data: card });
@@ -45,7 +45,7 @@ export const deleteCard = async (
   try {
     const card = await Card.findByIdAndRemove(cardId);
     if (!card) {
-      next(res.status(400).send("Не удалось найти карточку"));
+      next(new NotFoundErr("Не удалось найти карточку"));
     }
     return res.status(200).json({ data: card });
   } catch (err) {
@@ -72,7 +72,7 @@ export const likeCard = async (
       { new: true }
     );
     if (!card) {
-      next(res.status(400).send("Не удалось найти карточку"));
+      next(new NotFoundErr("Не удалось найти карточку"));
     }
     return res.status(200).json({ data: card });
   } catch (err) {
@@ -99,7 +99,7 @@ export const deleteLikeCard = async (
       { new: true }
     );
     if (!card) {
-      next(res.status(400).send("Не удалось найти карточку"));
+      next(new NotFoundErr("Не удалось найти карточку"));
     }
     return res.status(200).json({ data: card });
   } catch (err) {

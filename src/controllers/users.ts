@@ -1,4 +1,4 @@
-import { InternalServerErr } from "../errors/errors";
+import { BadRequestErr, InternalServerErr, NotFoundErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "utils/types";
 import User from "../models/user";
@@ -26,7 +26,7 @@ export const getUserById = async (
   try {
     const users = await User.findById(req.params.userId);
     if (!users) {
-      next(res.status(404).send("Пользователь не найден"));
+      next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).json({ data: users });
   } catch (err) {
@@ -42,7 +42,7 @@ export const createUser = async (
   const { email, password, name, about, avatar } = req.body;
   try {
     if (!email || !password) {
-      next(res.status(400).send("Проверьте данные пользователя"));
+      next(new BadRequestErr("Проверьте данные пользователя"));
     }
     const isInDatabase = await User.findOne({ email });
     if (isInDatabase) {
@@ -64,7 +64,7 @@ export const updateUser = async (
   const me = (req as IRequest).user?._id;
   try {
     if (!name || !about) {
-      next(res.status(400).send("Проверьте данные пользователя"));
+      next(new BadRequestErr("Проверьте данные пользователя"));
     }
 
     const user = await User.findByIdAndUpdate(
@@ -73,7 +73,7 @@ export const updateUser = async (
       { new: true, runValidators: true }
     );
     if (!user) {
-      next(res.status(404).send("Пользователь не найден"));
+      next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).json({ data: user });
   } catch (err) {
@@ -90,7 +90,7 @@ export const updateUserAvatar = async (
   const me = (req as IRequest).user?._id;
   try {
     if (!avatar) {
-      next(res.status(400).send("Проверьте ссылку на аватар"));
+      next(new BadRequestErr("Проверьте ссылку на аватар"));
     }
 
     const user = await User.findByIdAndUpdate(
@@ -99,7 +99,7 @@ export const updateUserAvatar = async (
       { new: true, runValidators: true }
     );
     if (!user) {
-      next(res.status(404).send("Пользователь не найден"));
+      next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).json({ data: user });
   } catch (err) {
