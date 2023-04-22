@@ -11,48 +11,48 @@ export const getUsers = async (
   try {
     const users = await User.find().exec();
     if (users) {
-      res.status(200).send({ data: users });
+      next(res.status(200).send({ data: users }));
     }
   } catch (err) {
-    return new InternalServerErr("На сервере произошла ошибка");
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await User.findById(req.params.userId);
     if (!users) {
-      return res.status(404).send("Пользователь не найден");
+      next(res.status(404).send("Пользователь не найден"));
     }
-    return res.status(200).json({ data: users });
+    next(res.status(200).json({ data: users }));
   } catch (err) {
-    return new InternalServerErr("На сервере произошла ошибка");
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, name, about, avatar } = req.body;
   try {
     if (!email || !password) {
-      return res.status(400).send("Проверьте данные пользователя");
+      next(res.status(400).send("Проверьте данные пользователя"));
     }
     const isInDatabase = await User.findOne({ email });
     if (isInDatabase) {
       // такая почта уже зарегистрирована
     }
     const user = await User.create({ name, about, avatar });
-    return res.status(201).json({ data: user });
+    next(res.status(201).json({ data: user }));
   } catch (err) {
-    return new InternalServerErr("На сервере произошла ошибка");
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, about } = req.body;
   const me = (req as IRequest).user?._id;
   try {
     if (!name || !about) {
-      return res.status(400).send("Проверьте данные пользователя");
+      next(res.status(400).send("Проверьте данные пользователя"));
     }
 
     const user = await User.findByIdAndUpdate(
@@ -61,20 +61,20 @@ export const updateUser = async (req: Request, res: Response) => {
       { new: true, runValidators: true }
     );
     if (!user) {
-      return res.status(404).send("Пользователь не найден");
+      next(res.status(404).send("Пользователь не найден"))
     }
-    return res.status(200).json({ data: user });
+    next(res.status(200).json({ data: user }));
   } catch (err) {
-    return new InternalServerErr("На сервере произошла ошибка");
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const updateUserAvatar = async (req: Request, res: Response) => {
+export const updateUserAvatar = async (req: Request, res: Response, next: NextFunction) => {
   const { avatar } = req.body;
   const me = (req as IRequest).user?._id;
   try {
     if (!avatar) {
-      return res.status(400).send("Проверьте ссылку на аватар");
+      next(res.status(400).send("Проверьте ссылку на аватар"));
     }
 
     const user = await User.findByIdAndUpdate(
@@ -83,10 +83,10 @@ export const updateUserAvatar = async (req: Request, res: Response) => {
       { new: true, runValidators: true }
     );
     if (!user) {
-      return res.status(404).send("Пользователь не найден");
+      next(res.status(404).send("Пользователь не найден"));
     }
-    return res.status(200).json({ data: user });
+    next(res.status(200).json({ data: user }));
   } catch (err) {
-    return new InternalServerErr("На сервере произошла ошибка");
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
