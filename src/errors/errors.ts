@@ -8,11 +8,11 @@ export class NotFoundErr extends Error {
 };
 
 export class InternalServerErr extends Error {
-  statusCode: number;
+  status: number;
 
   constructor(message: string) {
     super(message);
-    this.statusCode = 500;
+    this.status = 500;
   }
 }
 
@@ -26,11 +26,11 @@ export class BadRequestErr extends Error {
 };
 
 export class ForbiddenError extends Error {
-  statusCode: number;
+  status: number;
 
   constructor(message: string) {
     super(message);
-    this.statusCode = 403;
+    this.status = 403;
   }
 };
 
@@ -44,11 +44,11 @@ export class ConflictErr extends Error {
 }
 
 export class UnauthorizedErr extends Error {
-  statusCode: number;
+  status: number;
 
   constructor(message: string) {
     super(message);
-    this.statusCode = 401;
+    this.status = 401;
   }
 }
 
