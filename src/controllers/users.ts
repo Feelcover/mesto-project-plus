@@ -37,6 +37,10 @@ export const createUser = async (req: Request, res: Response) => {
     if (!email || !password) {
       return res.status(400).send('Проверьте данные пользователя');
     }
+    const isInDatabase = await User.findOne({ email });
+    if (isInDatabase) {
+      // такая почта уже зарегистрирована
+    }
     const user = await User.create({ name, about, avatar });
     return res.status(201).json({ data: user });
   } catch (err) {
