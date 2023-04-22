@@ -1,20 +1,28 @@
-import { InternalServerErr } from "errors/errors";
+import { InternalServerErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "utils/types";
 import Card from "../models/card";
 
-export const getCards = async (req: Request, res: Response, next: NextFunction) => {
+export const getCards = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const cards = await Card.find().exec();
     if (cards) {
-     next(res.status(200).send({ data: cards }));
+      return res.status(200).send({ data: cards });
     }
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const createCard = async (req: Request, res: Response, next: NextFunction) => {
+export const createCard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, link } = req.body;
   const owner = (req as IRequest).user?._id;
   try {
@@ -22,26 +30,34 @@ export const createCard = async (req: Request, res: Response, next: NextFunction
       next(res.status(400).send("Проверьте данные для создания карточки"));
     }
     const card = await Card.create({ name, link, owner });
-     next(res.status(201).json({ data: card }));
+    return res.status(201).json({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const deleteCard = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteCard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   try {
     const card = await Card.findByIdAndRemove(cardId);
     if (!card) {
       next(res.status(400).send("Не удалось найти карточку"));
     }
-    next(res.status(200).json({ data: card }));
+    return res.status(200).json({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const likeCard = async (req: Request, res: Response, next: NextFunction) => {
+export const likeCard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   const me = (req as IRequest).user?._id;
 
@@ -58,13 +74,17 @@ export const likeCard = async (req: Request, res: Response, next: NextFunction) 
     if (!card) {
       next(res.status(400).send("Не удалось найти карточку"));
     }
-    next(res.status(200).json({ data: card }));
+    return res.status(200).json({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
-export const deleteLikeCard = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteLikeCard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { cardId } = req.params;
   const me = (req as IRequest).user?._id;
 
@@ -81,7 +101,7 @@ export const deleteLikeCard = async (req: Request, res: Response, next: NextFunc
     if (!card) {
       next(res.status(400).send("Не удалось найти карточку"));
     }
-    next(res.status(200).json({ data: card }));
+    return res.status(200).json({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
