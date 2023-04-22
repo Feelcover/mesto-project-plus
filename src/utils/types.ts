@@ -8,11 +8,11 @@ export interface IRequestCustom extends Request {
 }
 
 export type TUser = {
+  email: string;
+  password: string;
   name: string;
   about: string;
   avatar: string;
-  email: string;
-  password: string;
 };
 
 export type TCard = {

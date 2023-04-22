@@ -32,9 +32,9 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, about, avatar } = req.body;
+  const {email, password, name, about, avatar } = req.body;
   try {
-    if (!name || !about || !avatar) {
+    if (!email || !password) {
       return res.status(400).send('Проверьте данные пользователя');
     }
     const user = await User.create({ name, about, avatar });
