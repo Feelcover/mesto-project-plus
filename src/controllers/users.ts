@@ -1,9 +1,13 @@
-import { BadRequestErr, ConflictErr, InternalServerErr, NotFoundErr } from "../errors/errors";
+import {
+  BadRequestErr,
+  ConflictErr,
+  InternalServerErr,
+  NotFoundErr,
+} from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "utils/types";
 import User from "../models/user";
-import bcrypt from 'bcrypt';
-
+import bcrypt from "bcrypt";
 
 export const getUsers = async (
   req: Request,
@@ -49,13 +53,24 @@ export const createUser = async (
     const isInDatabase = await User.findOne({ email });
     if (isInDatabase) {
       next(new ConflictErr("Такая почта уже зарегистрирована"));
-
     }
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    const bcryptPassword =await bcryptPassword.hash(password, 10);
-    const user = await User.create({ name, about, avatar });
-    return res.status(201).json({ data: user });
+    const hashPass = await bcrypt.hash(password, salt);
+    const user = await User.create({
+      email,
+      password: hashPass,
+      name,
+      about,
+      avatar,
+    });
+    return res.status(201).json({
+      data: {
+        email: user.email,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+      },
+    });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
