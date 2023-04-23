@@ -1,7 +1,9 @@
-import { BadRequestErr, InternalServerErr, NotFoundErr } from "../errors/errors";
+import { BadRequestErr, ConflictErr, InternalServerErr, NotFoundErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "utils/types";
 import User from "../models/user";
+import bcrypt from 'bcrypt';
+
 
 export const getUsers = async (
   req: Request,
@@ -46,8 +48,12 @@ export const createUser = async (
     }
     const isInDatabase = await User.findOne({ email });
     if (isInDatabase) {
-      // такая почта уже зарегистрирована
+      next(new ConflictErr("Такая почта уже зарегистрирована"));
+
     }
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+    const bcryptPassword =await bcryptPassword.hash(password, 10);
     const user = await User.create({ name, about, avatar });
     return res.status(201).json({ data: user });
   } catch (err) {
