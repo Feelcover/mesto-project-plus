@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import { regExp } from '../utils/constants';
-import { TUser } from '../utils/types';
+import { IUser, UserModel } from '../utils/types';
 import validator from 'validator';
 import { UnauthorizedErr } from 'errors/errors';
 import bcrypt from "bcrypt";
 
-const UserSchema = new mongoose.Schema<TUser>({
+const UserSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
     unique: true,
@@ -60,4 +60,4 @@ return user;
 
 
 
-export default mongoose.model<TUser>('User', UserSchema);
+export default mongoose.model<IUser, UserModel>('User', UserSchema);

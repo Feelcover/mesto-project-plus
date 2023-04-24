@@ -1,5 +1,6 @@
 import { Request } from 'express';
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
+
 
 export interface IRequestCustom extends Request {
   user?: {
@@ -7,7 +8,7 @@ export interface IRequestCustom extends Request {
   };
 }
 
-export type TUser = {
+export interface IUser {
   email: string;
   password: string;
   name: string;
@@ -18,8 +19,8 @@ export type TUser = {
 export type TCard = {
   name: string;
   link: string;
-  owner: Types.ObjectId;
-  likes: Types.ObjectId[];
+  owner: mongoose.Types.ObjectId;
+  likes: mongoose.Types.ObjectId[];
   createdAt: Date;
 };
 
@@ -27,4 +28,8 @@ export interface IRequest extends Request {
   user?: {
     _id: string;
   };
+}
+
+export interface UserModel extends mongoose.Model<IUser> {
+  findUserByCredentials: (email: string, password: string) => Promise<mongoose.Document<any, any, IUser>>
 }
