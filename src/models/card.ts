@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { regExp } from '../utils/constants';
 import { TCard } from '../utils/types';
 
 const cardSchema = new mongoose.Schema<TCard>({
