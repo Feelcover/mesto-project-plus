@@ -62,10 +62,6 @@ export const createUser = async (
     if (!email || !password) {
       next(new BadRequestErr("Проверьте данные пользователя"));
     }
-    const isInDatabase = await User.findOne({ email });
-    if (isInDatabase) {
-      next(new ConflictErr("Такая почта уже зарегистрирована"));
-    }
     const salt = await bcrypt.genSalt(10);
     const hashPass = await bcrypt.hash(password, salt);
     const user = await User.create({
