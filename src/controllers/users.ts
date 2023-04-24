@@ -5,9 +5,12 @@ import {
   NotFoundErr,
 } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
-import { IRequest } from "utils/types";
+import { IRequest } from "../utils/types";
 import User from "../models/user";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from "../utils/constants";
+
 
 export const getUsers = async (
   req: Request,
@@ -89,8 +92,11 @@ export const login = async (req:Request, res:Response, next:NextFunction) => {
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
+    res.status(200).send({
+      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' }),
+    });
   } catch (err) {
-
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
   //заготовка для входа
 };

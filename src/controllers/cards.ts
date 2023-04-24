@@ -1,6 +1,6 @@
 import { BadRequestErr, InternalServerErr, NotFoundErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
-import { IRequest } from "utils/types";
+import { IRequest } from "../utils/types";
 import Card from "../models/card";
 
 export const getCards = async (

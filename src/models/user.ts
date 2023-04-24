@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { regExp } from '../utils/constants';
 import { IUser, UserModel } from '../utils/types';
 import validator from 'validator';
-import { UnauthorizedErr } from 'errors/errors';
+import { UnauthorizedErr } from '../errors/errors';
 import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema<IUser>({

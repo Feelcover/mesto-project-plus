@@ -3,8 +3,7 @@ import path from 'path';
 import mongoose from 'mongoose';
 import routes from './routes/index';
 import { testUserId } from './utils/testUser';
-
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+import { DB_URL, PORT } from './utils/constants';
 
 const app = express();
 
