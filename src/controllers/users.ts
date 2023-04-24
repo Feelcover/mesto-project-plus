@@ -17,7 +17,11 @@ export const getUsers = async (
   try {
     const users = await User.find().exec();
     if (users) {
-      return res.status(200).send({ data: users });
+      const usersWithoutEmail = users.map((user) => {
+        const { email, ...userWithoutEmail } = user.toObject();
+        return userWithoutEmail;
+      });
+      return res.status(200).send({ data: usersWithoutEmail });
     }
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
@@ -34,11 +38,13 @@ export const getUserById = async (
     if (!user) {
       next(new NotFoundErr("Пользователь не найден"));
     }
-    return res.status(200).json({ data: {
-      name: user?.name,
-      about: user?.about,
-      avatar: user?.avatar,
-    }, });
+    return res.status(200).json({
+      data: {
+        name: user?.name,
+        about: user?.about,
+        avatar: user?.avatar,
+      },
+    });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
