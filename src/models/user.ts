@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { regExp } from '../utils/constants';
 import { TUser } from '../utils/types';
 import validator from 'validator';
+import { UnauthorizedErr } from 'errors/errors';
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema<TUser>({
   email: {
@@ -47,6 +49,14 @@ const UserSchema = new mongoose.Schema<TUser>({
   },
 });
 
+UserSchema.static("findUserByCredentials", async function findUserByCredentials(email, password) {
+const user = await this.findOne({email}).select("+password");
+const toMatchPass = await bcrypt.compare(password, user.password);
+if (!user || !toMatchPass) {
+  return Promise.reject(new UnauthorizedErr("Неверная почта или пароль"));
+}
+return user;
+});
 
 
 

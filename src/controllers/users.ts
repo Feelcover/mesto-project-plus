@@ -87,6 +87,11 @@ export const createUser = async (
 };
 export const login = async (req:Request, res:Response, next:NextFunction) => {
   const { email, password } = req.body;
+  try {
+    const user = await User.findUserByCredentials(email, password);
+  } catch (err) {
+
+  }
   //заготовка для входа
 };
 
@@ -103,7 +108,7 @@ export const getMe = async (
       next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).send({ data: user });
-  } catch (error) {
+  } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
