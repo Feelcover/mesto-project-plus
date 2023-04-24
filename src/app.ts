@@ -6,7 +6,7 @@ import { DB_URL, PORT } from "./utils/constants";
 import authMiddleware from "./middleware/authMiddleware";
 import helmet from "helmet";
 import { errorHandler } from "./errors/errHandler";
-import { errLogger, reqLogger } from "errors/loggers";
+import { errLogger, reqLogger } from "./errors/loggers";
 
 const app = express();
 
