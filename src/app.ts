@@ -1,5 +1,4 @@
 import express from "express";
-import path from "path";
 import mongoose from "mongoose";
 import routes from "./routes/index";
 import { testUserId } from "./utils/testUser";
