@@ -1,7 +1,8 @@
-import { BadRequestErr, InternalServerErr, NotFoundErr } from "../errors/errors";
+import { BadRequestErr, ForbiddenError, InternalServerErr, NotFoundErr } from "../errors/errors";
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "../utils/types";
 import Card from "../models/card";
+import { connected } from "process";
 
 export const getCards = async (
   req: Request,
@@ -30,7 +31,18 @@ export const createCard = async (
       next(new BadRequestErr("Проверьте данные для создания карточки"));
     }
     const card = await Card.create({ name, link, owner });
-    return res.status(201).json({ data: card });
+    return res.status(201).send({ statusCard:"created", data: card });
+  } catch (err) {
+    next(new InternalServerErr("На сервере произошла ошибка"));
+  }
+};
+export const getCardById = async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const card = await Card.findById(req.params.cardId);
+    if (!card) {
+      next(new NotFoundErr("Карточка не найдена"));
+    }
+    return res.status(200).send({data:{card}})
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -42,12 +54,16 @@ export const deleteCard = async (
   next: NextFunction
 ) => {
   const { cardId } = req.params;
+  const user = (req as IRequest).user?._id;
   try {
     const card = await Card.findByIdAndRemove(cardId);
     if (!card) {
       next(new NotFoundErr("Не удалось найти карточку"));
     }
-    return res.status(200).json({ data: card });
+    if (card && card.owner.toString() !== user?.toString()) {
+      next(new ForbiddenError("Нет прав для удаления карточки"))
+    }
+    return res.status(200).send({ statusCard:"deleted", data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -74,7 +90,7 @@ export const likeCard = async (
     if (!card) {
       next(new NotFoundErr("Не удалось найти карточку"));
     }
-    return res.status(200).json({ data: card });
+    return res.status(200).send({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -101,7 +117,7 @@ export const deleteLikeCard = async (
     if (!card) {
       next(new NotFoundErr("Не удалось найти карточку"));
     }
-    return res.status(200).json({ data: card });
+    return res.status(200).send({ data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
