@@ -1,8 +1,8 @@
-import { UnauthorizedErr } from "errors/errors";
+import { UnauthorizedErr } from "../errors/errors";
 import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "utils/constants";
-import { ISessionRequest } from "utils/types";
+import { JWT_SECRET } from "../utils/constants";
+import { ISessionRequest } from "../utils/types";
 
 const extractBearerToken = (header: string) => header.replace("Bearer ", "");
 

@@ -5,14 +5,18 @@ import routes from './routes/index';
 import { testUserId } from './utils/testUser';
 import { DB_URL, PORT } from './utils/constants';
 import authMiddleware from './middleware/authMiddleware';
+import helmet from 'helmet';
+import { errorHandler } from './errors/errHandler';
 
 const app = express();
 
 app.use(express.json());
-app.use(testUserId); // тестовый пользователь
+app.use(helmet())
+// app.use(testUserId);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(authMiddleware);
 app.use(routes);
+app.use(errorHandler)
 
 const start = async () => {
   try {
