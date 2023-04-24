@@ -85,6 +85,10 @@ export const createUser = async (
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
+export const login = async (req:Request, res:Response, next:NextFunction) => {
+  const { email, password } = req.body;
+  //заготовка для входа
+};
 
 export const getMe = async (
   req: Request,
