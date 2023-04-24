@@ -86,17 +86,21 @@ export const createUser = async (
   }
 };
 
-export const getMe = async (req:Request, res:Response, next:NextFunction) => {
+export const getMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const me = (req as IRequest).user?._id;
 
   try {
-  const user = User.findById(me);
-  if (!user) {
-    next(new NotFoundErr("Пользователь не найден"));
-  }
-  return res.status(200).send({})
+    const user = await User.findById(me);
+    if (!user) {
+      next(new NotFoundErr("Пользователь не найден"));
+    }
+    return res.status(200).send({ data: user });
   } catch (error) {
-
+    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
