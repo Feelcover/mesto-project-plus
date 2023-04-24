@@ -38,7 +38,7 @@ export const getUserById = async (
     if (!user) {
       next(new NotFoundErr("Пользователь не найден"));
     }
-    return res.status(200).json({
+    return res.status(200).send({
       data: {
         name: user?.name,
         about: user?.about,
@@ -73,7 +73,7 @@ export const createUser = async (
       about,
       avatar,
     });
-    return res.status(201).json({
+    return res.status(201).send({
       data: {
         email: user.email,
         name: user.name,
@@ -86,13 +86,27 @@ export const createUser = async (
   }
 };
 
+export const getMe = async (req:Request, res:Response, next:NextFunction) => {
+  const me = (req as IRequest).user?._id;
+
+  try {
+  const user = User.findById(me);
+  if (!user) {
+    next(new NotFoundErr("Пользователь не найден"));
+  }
+  return res.status(200).send({})
+  } catch (error) {
+
+  }
+};
+
 export const updateUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { name, about } = req.body;
   const me = (req as IRequest).user?._id;
+  const { name, about } = req.body;
   try {
     if (!name && !about) {
       next(new BadRequestErr("Проверьте данные пользователя"));
@@ -106,7 +120,7 @@ export const updateUser = async (
     if (!user) {
       next(new NotFoundErr("Пользователь не найден"));
     }
-    return res.status(200).json({ data: user });
+    return res.status(200).send({ data: user });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -132,7 +146,7 @@ export const updateUserAvatar = async (
     if (!user) {
       next(new NotFoundErr("Пользователь не найден"));
     }
-    return res.status(200).json({ data: user });
+    return res.status(200).send({ data: user });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
