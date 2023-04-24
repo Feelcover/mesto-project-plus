@@ -25,7 +25,7 @@ export const getUsers = async (
       });
       return res.status(200).send({ data: usersWithoutEmail });
     }
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -47,7 +47,7 @@ export const getUserById = async (
         avatar: user?.avatar,
       },
     });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -79,7 +79,7 @@ export const createUser = async (
         avatar: user.avatar,
       },
     });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -94,7 +94,7 @@ export const login = async (
     res.status(200).send({
       token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
     });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -112,7 +112,7 @@ export const getMe = async (
       next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).send({ data: user });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -138,7 +138,7 @@ export const updateUser = async (
       next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).send({ data: user });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -164,7 +164,7 @@ export const updateUserAvatar = async (
       next(new NotFoundErr("Пользователь не найден"));
     }
     return res.status(200).send({ data: user });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };

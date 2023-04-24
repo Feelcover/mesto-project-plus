@@ -13,7 +13,7 @@ export const getCards = async (
     if (cards) {
       return res.status(200).send({ data: cards });
     }
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -31,7 +31,7 @@ export const createCard = async (
     }
     const card = await Card.create({ name, link, owner });
     return res.status(201).send({ statusCard: "created", data: card });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -53,9 +53,8 @@ export const updateCard = async (req:Request, res:Response, next:NextFunction) =
     }
     return res.status(200).send({ data: card });
 
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
-
   }
 };
 
@@ -67,7 +66,7 @@ export const getCardById = async (req: Request, res: Response, next: NextFunctio
       next(new NotFoundErr("Карточка не найдена"));
     }
     return res.status(200).send({ data: { card } })
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -89,7 +88,7 @@ export const deleteCard = async (
     } else {
       return res.status(200).send({statusCard: "deleted", data: card });
     }
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -116,7 +115,7 @@ export const likeCard = async (
       next(new NotFoundErr("Не удалось найти карточку"));
     }
     return res.status(200).send({statusLike:"added", data: card });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
@@ -142,7 +141,7 @@ export const deleteLikeCard = async (
       next(new NotFoundErr("Не удалось найти карточку"));
     }
     return res.status(200).send({statusLike:"deleted", data: card });
-  } catch (err) {
+  } catch {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };

@@ -4,7 +4,7 @@ import routes from "./routes/index";
 import { DB_URL, PORT } from "./utils/constants";
 import authMiddleware from "./middleware/authMiddleware";
 import helmet from "helmet";
-import { errorHandler } from "./errors/errHandler";
+import { errHandler } from "./errors/errHandler";
 import { errLogger, reqLogger } from "./errors/loggers";
 import { errors } from 'celebrate';
 import { createUserValidate, loginValidate } from "./validations/validationAuth";
@@ -21,7 +21,7 @@ app.post('/signup', createUserValidate, createUser);
 app.post('/signin', loginValidate, login);
 app.use(authMiddleware);
 app.use(routes);
-app.use(errorHandler);
+app.use(errHandler);
 
 const start = async () => {
   try {
