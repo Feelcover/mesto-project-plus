@@ -30,11 +30,15 @@ export const getUserById = async (
   next: NextFunction
 ) => {
   try {
-    const users = await User.findById(req.params.userId);
-    if (!users) {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
       next(new NotFoundErr("Пользователь не найден"));
     }
-    return res.status(200).json({ data: users });
+    return res.status(200).json({ data: {
+      name: user?.name,
+      about: user?.about,
+      avatar: user?.avatar,
+    }, });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -84,7 +88,7 @@ export const updateUser = async (
   const { name, about } = req.body;
   const me = (req as IRequest).user?._id;
   try {
-    if (!name || !about) {
+    if (!name && !about) {
       next(new BadRequestErr("Проверьте данные пользователя"));
     }
 
