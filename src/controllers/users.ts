@@ -1,20 +1,19 @@
+import { NextFunction, Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import {
   BadRequestErr,
-  ConflictErr,
   InternalServerErr,
   NotFoundErr,
-} from "../errors/errors";
-import { NextFunction, Request, Response } from "express";
-import { IRequest } from "../utils/types";
-import User from "../models/user";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../utils/constants";
+} from '../errors/errors';
+import { IRequest } from '../utils/types';
+import User from '../models/user';
+import { JWT_SECRET } from '../utils/constants';
 
 export const getUsers = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const users = await User.find().exec();
@@ -26,19 +25,19 @@ export const getUsers = async (
       return res.status(200).send({ data: usersWithoutEmail });
     }
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const getUserById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      next(new NotFoundErr("Пользователь не найден"));
+      next(new NotFoundErr('Пользователь не найден'));
     }
     return res.status(200).send({
       data: {
@@ -48,19 +47,21 @@ export const getUserById = async (
       },
     });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const createUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email, password, name, about, avatar,
+  } = req.body;
   try {
     if (!email || !password) {
-      next(new BadRequestErr("Проверьте данные пользователя"));
+      next(new BadRequestErr('Проверьте данные пользователя'));
     }
     const salt = await bcrypt.genSalt(10);
     const hashPass = await bcrypt.hash(password, salt);
@@ -80,91 +81,91 @@ export const createUser = async (
       },
     });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 export const login = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
     res.status(200).send({
-      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
+      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' }),
     });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const getMe = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const me = (req as IRequest).user?._id;
 
   try {
     const user = await User.findById(me);
     if (!user) {
-      next(new NotFoundErr("Пользователь не найден"));
+      next(new NotFoundErr('Пользователь не найден'));
     }
     return res.status(200).send({ data: user });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const updateUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const me = (req as IRequest).user?._id;
   const { name, about } = req.body;
   try {
     if (!name && !about) {
-      next(new BadRequestErr("Проверьте данные пользователя"));
+      next(new BadRequestErr('Проверьте данные пользователя'));
     }
 
     const user = await User.findByIdAndUpdate(
       me,
       { name, about },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!user) {
-      next(new NotFoundErr("Пользователь не найден"));
+      next(new NotFoundErr('Пользователь не найден'));
     }
     return res.status(200).send({ data: user });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const updateUserAvatar = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { avatar } = req.body;
   const me = (req as IRequest).user?._id;
   try {
     if (!avatar) {
-      next(new BadRequestErr("Проверьте ссылку на аватар"));
+      next(new BadRequestErr('Проверьте ссылку на аватар'));
     }
 
     const user = await User.findByIdAndUpdate(
       me,
       { avatar },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!user) {
-      next(new NotFoundErr("Пользователь не найден"));
+      next(new NotFoundErr('Пользователь не найден'));
     }
     return res.status(200).send({ data: user });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };

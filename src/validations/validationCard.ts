@@ -1,5 +1,5 @@
-import { celebrate, Joi } from "celebrate";
-import { regExp } from "../utils/constants";
+import { celebrate, Joi } from 'celebrate';
+import { regExp } from '../utils/constants';
 
 export const cardWithBodyValidate = celebrate({
   body: Joi.object()

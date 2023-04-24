@@ -5,7 +5,7 @@ export class NotFoundErr extends Error {
     super(message);
     this.status = 404;
   }
-};
+}
 
 export class InternalServerErr extends Error {
   status: number;
@@ -23,7 +23,7 @@ export class BadRequestErr extends Error {
     super(message);
     this.status = 400;
   }
-};
+}
 
 export class ForbiddenError extends Error {
   status: number;
@@ -32,7 +32,7 @@ export class ForbiddenError extends Error {
     super(message);
     this.status = 403;
   }
-};
+}
 
 export class ConflictErr extends Error {
   status: number;
@@ -51,4 +51,3 @@ export class UnauthorizedErr extends Error {
     this.status = 401;
   }
 }
-

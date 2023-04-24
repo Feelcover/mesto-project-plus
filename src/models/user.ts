@@ -1,23 +1,23 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcrypt';
 import { regExp } from '../utils/constants';
 import { IUser, UserModel } from '../utils/types';
-import validator from 'validator';
 import { UnauthorizedErr } from '../errors/errors';
-import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
     unique: true,
     required: true,
-    validate:{
+    validate: {
       validator: (valid: string) => validator.isEmail(valid),
     },
   },
   password: {
     type: String,
     required: true,
-    select:false,
+    select: false,
   },
   name: {
     type: String,
@@ -49,15 +49,13 @@ const UserSchema = new mongoose.Schema<IUser>({
   },
 });
 
-UserSchema.static("findUserByCredentials", async function findUserByCredentials(email, password) {
-const user = await this.findOne({email}).select("+password");
-const toMatchPass = await bcrypt.compare(password, user.password);
-if (!user || !toMatchPass) {
-  return Promise.reject(new UnauthorizedErr("Неверная почта или пароль"));
-}
-return user;
+UserSchema.static('findUserByCredentials', async function findUserByCredentials(email, password) {
+  const user = await this.findOne({ email }).select('+password');
+  const toMatchPass = await bcrypt.compare(password, user.password);
+  if (!user || !toMatchPass) {
+    return Promise.reject(new UnauthorizedErr('Неверная почта или пароль'));
+  }
+  return user;
 });
-
-
 
 export default mongoose.model<IUser, UserModel>('User', UserSchema);

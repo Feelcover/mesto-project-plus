@@ -2,7 +2,6 @@ import { Request } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-
 export interface IRequestCustom extends Request {
   user?: {
     _id: string;
@@ -15,7 +14,7 @@ export interface IUser {
   name: string;
   about: string;
   avatar: string;
-};
+}
 
 export type TCard = {
   name: string;
@@ -32,10 +31,12 @@ export interface IRequest extends Request {
 }
 
 export interface ISessionRequest extends Request {
-  user?: string | JwtPayload;}
-
-
-export interface UserModel extends mongoose.Model<IUser> {
-  findUserByCredentials: (email: string, password: string) => Promise<mongoose.Document<any, any, IUser>>
+  user?: string | JwtPayload;
 }
 
+export interface UserModel extends mongoose.Model<IUser> {
+  findUserByCredentials: (
+    email: string,
+    password: string
+  ) => Promise<mongoose.Document<any, any, IUser>>;
+}
