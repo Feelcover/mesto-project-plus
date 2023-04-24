@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { createUserValidate, loginValidate } from '../validations/validationAuth';
 import {
   createUser, login,
 } from '../controllers/users';
@@ -6,8 +7,8 @@ import {
 
 const authRouter = Router();
 
-authRouter.post('/signup', createUser);
-authRouter.post('/signin', login);
+authRouter.post('/signup', createUserValidate, createUser);
+authRouter.post('/signin', loginValidate, login);
 
 
 export default authRouter;

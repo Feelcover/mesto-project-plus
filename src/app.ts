@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(reqLogger);
 app.use(errLogger);
-// app.use(testUserId);
+app.use(testUserId);
 app.use(authMiddleware);
 app.use(routes);
 app.use(errorHandler);

@@ -5,9 +5,11 @@ import { TCard } from '../utils/types';
 const cardSchema = new mongoose.Schema<TCard>({
   name: {
     type: String,
+    required: true,
   },
   link: {
     type: String,
+    required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

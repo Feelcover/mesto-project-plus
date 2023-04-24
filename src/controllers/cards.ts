@@ -2,7 +2,6 @@ import { BadRequestErr, ForbiddenError, InternalServerErr, NotFoundErr } from ".
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "../utils/types";
 import Card from "../models/card";
-import { connected } from "process";
 
 export const getCards = async (
   req: Request,
@@ -37,8 +36,9 @@ export const createCard = async (
   }
 };
 export const getCardById = async (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.cardId
   try {
-    const card = await Card.findById(req.params.cardId);
+    const card = await Card.findById(id);
     if (!card) {
       next(new NotFoundErr("Карточка не найдена"));
     }
