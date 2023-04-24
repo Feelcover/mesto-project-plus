@@ -76,14 +76,14 @@ export const likeCard = async (
   next: NextFunction
 ) => {
   const { cardId } = req.params;
-  const me = (req as IRequest).user?._id;
+  const user = (req as IRequest).user?._id;
 
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
       {
         $addToSet: {
-          likes: me,
+          likes: user,
         },
       },
       { new: true }
@@ -91,7 +91,7 @@ export const likeCard = async (
     if (!card) {
       next(new NotFoundErr("Не удалось найти карточку"));
     }
-    return res.status(200).send({ data: card });
+    return res.status(200).send({statusLike:"added", data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
@@ -104,7 +104,6 @@ export const deleteLikeCard = async (
 ) => {
   const { cardId } = req.params;
   const me = (req as IRequest).user?._id;
-
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
@@ -118,7 +117,7 @@ export const deleteLikeCard = async (
     if (!card) {
       next(new NotFoundErr("Не удалось найти карточку"));
     }
-    return res.status(200).send({ data: card });
+    return res.status(200).send({statusLike:"deleted", data: card });
   } catch (err) {
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
