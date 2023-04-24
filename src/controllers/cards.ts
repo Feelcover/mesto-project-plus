@@ -35,6 +35,30 @@ export const createCard = async (
     next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
+
+export const updateCard = async (req:Request, res:Response, next:NextFunction) => {
+  const id = req.params.cardId
+  const { name, link } = req.body;
+  try {
+    if (!name && !link) {
+      next(new BadRequestErr("Проверьте данные карточки"));
+    }
+    const card = await Card.findByIdAndUpdate(
+      id,
+      { name, link },
+      { new: true, runValidators: true }
+    );
+    if (!card) {
+      next(new NotFoundErr("Пользователь не найден"));
+    }
+    return res.status(200).send({ data: card });
+
+  } catch (err) {
+    next(new InternalServerErr("На сервере произошла ошибка"));
+
+  }
+};
+
 export const getCardById = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.cardId
   try {
