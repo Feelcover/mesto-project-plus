@@ -4,12 +4,14 @@ import mongoose from 'mongoose';
 import routes from './routes/index';
 import { testUserId } from './utils/testUser';
 import { DB_URL, PORT } from './utils/constants';
+import authMiddleware from './middleware/authMiddleware';
 
 const app = express();
 
 app.use(express.json());
 app.use(testUserId); // тестовый пользователь
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(authMiddleware);
 app.use(routes);
 
 const start = async () => {
