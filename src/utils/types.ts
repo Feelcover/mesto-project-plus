@@ -35,8 +35,7 @@ export interface ISessionRequest extends Request {
 }
 
 export interface UserModel extends mongoose.Model<IUser> {
-  findUserByCredentials: (
-    email: string,
-    password: string
+  // eslint-disable-next-line no-unused-vars
+  findUserByCredentials: (email: string, password: string
   ) => Promise<mongoose.Document<any, any, IUser>>;
 }
