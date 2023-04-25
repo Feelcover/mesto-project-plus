@@ -3,7 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 import { regExp } from '../utils/constants';
 import { IUser, UserModel } from '../utils/types';
-import { UnauthorizedErr } from '../errors/errors';
+import UnauthorizedErr from '../errors/UnauthorizedErr';
 
 const UserSchema = new mongoose.Schema<IUser>({
   email: {

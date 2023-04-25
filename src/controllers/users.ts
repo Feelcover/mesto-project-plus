@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import {
-  BadRequestErr,
-  InternalServerErr,
-  NotFoundErr,
-} from '../errors/errors';
+import BadRequestErr from "../errors/BadRequestErr";
+import InternalServerErr from "../errors/InternalServerErr";
+import NotFoundErr from "../errors/NotFoundErr";
 import { IRequest } from '../utils/types';
 import User from '../models/user';
 import { JWT_SECRET } from '../utils/constants';
