@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
+import { CustomError } from '../utils/types';
 
-export const errHandler = (err:Error, req:Request, res:Response, next:NextFunction) => {
-  const statusCode = res.statusCode || 500;
-  const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
-  res.status(statusCode).send({ message });
+export const errHandler = (err:CustomError, req:Request, res:Response, next:NextFunction) => {
+  const status = err.status || 500;
+  const message = status === 500 ? 'На сервере произошла ошибка' : err.message;
+  res.status(status).send({ message });
   next();
 };

@@ -39,3 +39,7 @@ export interface UserModel extends mongoose.Model<IUser> {
   findUserByCredentials: (email: string, password: string
   ) => Promise<mongoose.Document<any, any, IUser>>;
 }
+
+export interface CustomError extends Error {
+  status?: number;
+}
