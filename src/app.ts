@@ -15,12 +15,12 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(reqLogger);
-app.use(errLogger);
-app.use(errors());
 app.post('/signup', createUserValidate, createUser);
 app.post('/signin', loginValidate, login);
 app.use(authMiddleware);
 app.use(routes);
+app.use(errLogger);
+app.use(errors());
 app.use(errHandler);
 
 const start = async () => {

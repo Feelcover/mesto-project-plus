@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   about: {
     type: String,
     minlength: 2,
-    maxlength: 200,
+    maxlength: 200, //about — информация о пользователе, строка от 2 до 200 символов, обязательное поле;
     default: 'Исследователь',
     validate: {
       validator: (valid: string) => valid.length > 2 && valid.length < 200,

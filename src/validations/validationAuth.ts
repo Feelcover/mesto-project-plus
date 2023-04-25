@@ -9,8 +9,7 @@ export const createUserValidate = celebrate({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(200),
       avatar: Joi.string().regex(regExp),
-    })
-    .unknown(false),
+    }),
 });
 
 export const loginValidate = celebrate({
@@ -18,6 +17,5 @@ export const loginValidate = celebrate({
     .keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
-    })
-    .unknown(false),
+    }),
 });

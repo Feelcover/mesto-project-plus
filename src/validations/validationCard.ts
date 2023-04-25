@@ -6,12 +6,11 @@ export const cardWithBodyValidate = celebrate({
     .keys({
       name: Joi.string().required().min(2).max(30),
       link: Joi.string().required().regex(regExp),
-    })
-    .unknown(false),
+    }),
 });
 
 export const cardWithIdValidate = celebrate({
-  body: Joi.object().keys({
+  params: Joi.object().keys({
     cardId: Joi.string().required().length(24).hex(),
   }),
 });

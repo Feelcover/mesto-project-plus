@@ -12,14 +12,12 @@ export const updateUserValidate = celebrate({
     .keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(200),
-    })
-    .unknown(false),
+    }),
 });
 
 export const updateAvatarValidate = celebrate({
   body: Joi.object()
     .keys({
       avatar: Joi.string().regex(regExp),
-    })
-    .unknown(false),
+    }),
 });
