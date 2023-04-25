@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema<IUser>({
     default: 'Исследователь',
     validate: {
       validator: (valid: string) => valid.length > 2 && valid.length < 30,
-      message: 'Текст короче 2 символов или длиннее 200',
+      message: 'Текст короче 2 символов или длиннее 30',
     },
   },
   avatar: {
