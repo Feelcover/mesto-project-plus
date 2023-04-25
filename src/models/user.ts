@@ -32,10 +32,10 @@ const UserSchema = new mongoose.Schema<IUser>({
   about: {
     type: String,
     minlength: 2,
-    maxlength: 200, // about — информация о пользователе, строка от 2 до 200 символов
+    maxlength: 30,
     default: 'Исследователь',
     validate: {
-      validator: (valid: string) => valid.length > 2 && valid.length < 200,
+      validator: (valid: string) => valid.length > 2 && valid.length < 30,
       message: 'Текст короче 2 символов или длиннее 200',
     },
   },
@@ -54,8 +54,11 @@ UserSchema.static(
   'findUserByCredentials',
   async function findUserByCredentials(email, password) {
     const user = await this.findOne({ email }).select('+password');
+    if (!user) {
+      return Promise.reject(new UnauthorizedErr('Неверная почта или пароль'));
+    }
     const toMatchPass = await bcrypt.compare(password, user.password);
-    if (!user || !toMatchPass) {
+    if (!toMatchPass) {
       return Promise.reject(new UnauthorizedErr('Неверная почта или пароль'));
     }
     return user;
