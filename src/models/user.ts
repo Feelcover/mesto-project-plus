@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   about: {
     type: String,
     minlength: 2,
-    maxlength: 200, //about — информация о пользователе, строка от 2 до 200 символов, обязательное поле;
+    maxlength: 200, // about — информация о пользователе, строка от 2 до 200 символов
     default: 'Исследователь',
     validate: {
       validator: (valid: string) => valid.length > 2 && valid.length < 200,
@@ -41,7 +41,8 @@ const UserSchema = new mongoose.Schema<IUser>({
   },
   avatar: {
     type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default:
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (valid: string) => regExp.test(valid),
       message: 'Некорректная ссылка',
@@ -49,13 +50,16 @@ const UserSchema = new mongoose.Schema<IUser>({
   },
 });
 
-UserSchema.static('findUserByCredentials', async function findUserByCredentials(email, password) {
-  const user = await this.findOne({ email }).select('+password');
-  const toMatchPass = await bcrypt.compare(password, user.password);
-  if (!user || !toMatchPass) {
-    return Promise.reject(new UnauthorizedErr('Неверная почта или пароль'));
-  }
-  return user;
-});
+UserSchema.static(
+  'findUserByCredentials',
+  async function findUserByCredentials(email, password) {
+    const user = await this.findOne({ email }).select('+password');
+    const toMatchPass = await bcrypt.compare(password, user.password);
+    if (!user || !toMatchPass) {
+      return Promise.reject(new UnauthorizedErr('Неверная почта или пароль'));
+    }
+    return user;
+  },
+);
 
 export default mongoose.model<IUser, UserModel>('User', UserSchema);

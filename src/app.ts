@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express from 'express';
 import mongoose from 'mongoose';
 import helmet from 'helmet';

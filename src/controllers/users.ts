@@ -1,18 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import BadRequestErr from "../errors/BadRequestErr";
-import InternalServerErr from "../errors/InternalServerErr";
-import NotFoundErr from "../errors/NotFoundErr";
-import { IRequest } from "../utils/types";
-import User from "../models/user";
-import { JWT_SECRET } from "../utils/constants";
-import ConflictErr from "errors/ConflictErr";
+import { NextFunction, Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import BadRequestErr from '../errors/BadRequestErr';
+import NotFoundErr from '../errors/NotFoundErr';
+import { IRequest } from '../utils/types';
+import User from '../models/user';
+import { JWT_SECRET } from '../utils/constants';
+import ConflictErr from '../errors/ConflictErr';
+import InternalServerErr from '../errors/InternalServerErr';
 
 export const getUsers = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const users = await User.find().exec();
@@ -21,24 +21,24 @@ export const getUsers = async (
         const { email, ...userWithoutEmail } = user.toObject();
         return userWithoutEmail;
       });
-      return res.status(200).send({ data: usersWithoutEmail });
+      return res.send({ data: usersWithoutEmail });
     }
-  } catch(err) {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+  } catch (err) {
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const getUserById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return next(new NotFoundErr("Пользователь не найден"));
+      return next(new NotFoundErr('Пользователь не найден'));
     }
-    return res.status(200).send({
+    return res.send({
       data: {
         name: user?.name,
         about: user?.about,
@@ -53,12 +53,14 @@ export const getUserById = async (
 export const createUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email, password, name, about, avatar,
+  } = req.body;
   try {
     if (!email || !password) {
-      return next(new BadRequestErr("Проверьте данные пользователя"));
+      return next(new BadRequestErr('Проверьте данные пользователя'));
     }
     const salt = await bcrypt.genSalt(10);
     const hashPass = await bcrypt.hash(password, salt);
@@ -90,13 +92,13 @@ export const createUser = async (
 export const login = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
-    res.status(200).send({
-      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
+    res.send({
+      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' }),
     });
   } catch (err) {
     next(err);
@@ -106,16 +108,16 @@ export const login = async (
 export const getMe = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const me = (req as IRequest).user?._id;
 
   try {
     const user = await User.findById(me);
     if (!user) {
-      return next(new NotFoundErr("Пользователь не найден"));
+      return next(new NotFoundErr('Пользователь не найден'));
     }
-    return res.status(200).send({ data: user });
+    return res.send({ data: user });
   } catch (err) {
     next(err);
   }
@@ -124,24 +126,24 @@ export const getMe = async (
 export const updateUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const me = (req as IRequest).user?._id;
   const { name, about } = req.body;
   try {
     if (!name && !about) {
-      return next(new BadRequestErr("Проверьте данные пользователя"));
+      return next(new BadRequestErr('Проверьте данные пользователя'));
     }
 
     const user = await User.findByIdAndUpdate(
       me,
       { name, about },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!user) {
-      return next(new NotFoundErr("Пользователь не найден"));
+      return next(new NotFoundErr('Пользователь не найден'));
     }
-    return res.status(200).send({ data: user });
+    return res.send({ data: user });
   } catch (err) {
     if (err instanceof Error && err.name === 'ValidationError') {
       next(new BadRequestErr('Переданы некорректные данные при обновлении профиля'));
@@ -154,24 +156,24 @@ export const updateUser = async (
 export const updateUserAvatar = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { avatar } = req.body;
   const me = (req as IRequest).user?._id;
   try {
     if (!avatar) {
-      return next(new BadRequestErr("Проверьте ссылку на аватар"));
+      return next(new BadRequestErr('Проверьте ссылку на аватар'));
     }
 
     const user = await User.findByIdAndUpdate(
       me,
       { avatar },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!user) {
-      return next(new NotFoundErr("Пользователь не найден"));
+      return next(new NotFoundErr('Пользователь не найден'));
     }
-    return res.status(200).send({ data: user });
+    return res.send({ data: user });
   } catch (err) {
     if (err instanceof Error && err.name === 'ValidationError') {
       next(new BadRequestErr('Переданы некорректные данные при обновлении аватара'));

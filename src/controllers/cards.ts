@@ -1,112 +1,77 @@
-import { NextFunction, Request, Response } from "express";
-import BadRequestErr from "../errors/BadRequestErr";
-import ForbiddenError from "../errors/ForbiddenError";
-import InternalServerErr from "../errors/InternalServerErr";
-import NotFoundErr from "../errors/NotFoundErr";
-import { IRequest } from "../utils/types";
-import Card from "../models/card";
+import { NextFunction, Request, Response } from 'express';
+import BadRequestErr from '../errors/BadRequestErr';
+import ForbiddenError from '../errors/ForbiddenError';
+import InternalServerErr from '../errors/InternalServerErr';
+import NotFoundErr from '../errors/NotFoundErr';
+import { IRequest } from '../utils/types';
+import Card from '../models/card';
 
 export const getCards = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const cards = await Card.find().exec();
     if (cards) {
-      return res.status(200).send({ data: cards });
+      return res.send({ data: cards });
     }
-  } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+  } catch (err) {
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const createCard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { name, link } = req.body;
   const owner = (req as IRequest).user?._id;
   try {
     if (!name || !link) {
-      next(new BadRequestErr("Проверьте данные для создания карточки"));
+      return next(new BadRequestErr('Проверьте данные для создания карточки'));
     }
     const card = await Card.create({ name, link, owner });
-    return res.status(201).send({ statusCard: "created", data: card });
-  } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
-  }
-};
-
-export const updateCard = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const id = req.params.cardId;
-  const { name, link } = req.body;
-  try {
-    if (!name && !link) {
-      next(new BadRequestErr("Проверьте данные карточки"));
+    return res.status(201).send({ statusCard: 'created', data: card });
+  } catch (err) {
+    if (err instanceof Error && err.name === 'ValidationError') {
+      next(new BadRequestErr('Переданы некорректные данные при создании пользователя'));
+    } else {
+      next(err);
     }
-    const card = await Card.findByIdAndUpdate(
-      id,
-      { name, link },
-      { new: true, runValidators: true }
-    );
-    if (!card) {
-      next(new NotFoundErr("Пользователь не найден"));
-    }
-    return res.status(200).send({ data: card });
-  } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
-  }
-};
-
-export const getCardById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const id = req.params.cardId;
-  try {
-    const card = await Card.findById(id);
-    if (!card) {
-      next(new NotFoundErr("Карточка не найдена"));
-    }
-    return res.status(200).send({ data: { card } });
-  } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
   }
 };
 
 export const deleteCard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const userId = (req as IRequest).user?._id;
   try {
-    const card = await Card.findByIdAndRemove(cardId);
+    const card = await Card.findOne({ _id: cardId });
     if (!card) {
-      next(new NotFoundErr("Не удалось найти карточку"));
+      return next(new NotFoundErr('Не удалось найти карточку'));
     }
-    if (card && card.owner.toString() !== userId?.toString()) {
-      next(new ForbiddenError("Нет прав для удаления карточки"));
-    } else {
-      return res.status(200).send({ statusCard: "deleted", data: card });
+    if (card.owner.toString() !== userId?.toString()) {
+      return next(new ForbiddenError('Нет прав для удаления карточки'));
     }
+    const result = await Card.deleteOne({ _id: cardId });
+    if (result.deletedCount === 1) {
+      return res.send({ statusCard: 'deleted', data: card });
+    }
+    return next(new NotFoundErr('Не удалось найти карточку'));
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const likeCard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const user = (req as IRequest).user?._id;
@@ -119,21 +84,21 @@ export const likeCard = async (
           likes: user,
         },
       },
-      { new: true }
+      { new: true },
     );
     if (!card) {
-      next(new NotFoundErr("Не удалось найти карточку"));
+      return next(new NotFoundErr('Не удалось найти карточку'));
     }
-    return res.status(200).send({ statusLike: "added", data: card });
+    return res.send({ statusLike: 'added', data: card });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
 
 export const deleteLikeCard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const me = (req as IRequest).user?._id;
@@ -145,13 +110,13 @@ export const deleteLikeCard = async (
           likes: me,
         },
       },
-      { new: true }
+      { new: true },
     );
     if (!card) {
-      next(new NotFoundErr("Не удалось найти карточку"));
+      return next(new NotFoundErr('Не удалось найти карточку'));
     }
-    return res.status(200).send({ statusLike: "deleted", data: card });
+    return res.send({ statusLike: 'deleted', data: card });
   } catch {
-    next(new InternalServerErr("На сервере произошла ошибка"));
+    next(new InternalServerErr('На сервере произошла ошибка'));
   }
 };
