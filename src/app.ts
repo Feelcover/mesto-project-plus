@@ -1,17 +1,28 @@
+/* eslint-disable no-console */
 import express from 'express';
-import path from 'path';
 import mongoose from 'mongoose';
+import helmet from 'helmet';
+import { errors } from 'celebrate';
 import routes from './routes/index';
-import { testUserId } from './utils/testUser';
-
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+import { DB_URL, PORT } from './utils/constants';
+import authMiddleware from './middleware/authMiddleware';
+import { errHandler } from './errors/errHandler';
+import { errLogger, reqLogger } from './errors/loggers';
+import { createUserValidate, loginValidate } from './validations/validationAuth';
+import { createUser, login } from './controllers/users';
 
 const app = express();
 
 app.use(express.json());
-app.use(testUserId); // тестовый пользователь
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(helmet());
+app.use(reqLogger);
+app.post('/signup', createUserValidate, createUser);
+app.post('/signin', loginValidate, login);
+app.use(authMiddleware);
 app.use(routes);
+app.use(errLogger);
+app.use(errors());
+app.use(errHandler);
 
 const start = async () => {
   try {
