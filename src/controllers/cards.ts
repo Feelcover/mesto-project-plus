@@ -36,7 +36,7 @@ export const createCard = async (
     return res.status(201).send({ statusCard: 'created', data: card });
   } catch (err) {
     if (err instanceof Error && err.name === 'ValidationError') {
-      next(new BadRequestErr('Переданы некорректные данные при создании пользователя'));
+      next(new BadRequestErr('Переданы некорректные данные при создании карточки'));
     } else {
       next(err);
     }
