@@ -83,7 +83,7 @@ export const createUser = async (
     if (err instanceof Error && err.name === 'ValidationError') {
       next(new BadRequestErr('Переданы некорректные данные при создании пользователя'));
     } else if (err instanceof Error && err.message.includes('email_1')) {
-      next(new ConflictErr('Пользователь с таким email уже существует'));
+      next(new ConflictErr('Пользователь с таким email существует'));
     } else {
       next(err);
     }
